@@ -1,33 +1,35 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import image_tree from './assets/top/tree.svg'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className='top-container'>
+        <div className='main-container'>
+          <h1>ようこそ、資格の森へ！</h1>
+          <img src={image_tree} className='image_tree'/>
+
+        </div>
+        <div className='side-container'>
+          <div className='side-container-btn'>
+            <button>ログイン</button>
+            <button>登録</button>
+          </div>
+          <div className='side-container-qualifications'>
+            <p>問題集を選ぶ</p>
+            <ul>
+              <li>Python</li>
+              <li>VBA</li>
+              <li>LPIC</li>
+            </ul>
+          </div>
+
+        </div>
+
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
