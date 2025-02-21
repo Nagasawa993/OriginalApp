@@ -40,7 +40,7 @@
   display: flex;
   flex-direction: column;
   text-align: center;
-  border-color: #020202;
+  background-color:rgb(151, 219, 161);
 }
 
 ul {
