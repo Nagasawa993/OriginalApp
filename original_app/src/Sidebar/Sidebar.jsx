@@ -9,11 +9,14 @@ function Sidebar () {
   const goToLogin = () => {
     navigate('/Login');
   };
+  const goToRegister = () => {
+    navigate('/Register');
+  };
   return (
     <div className='side-container'>
       <div className='side-container-btn'>
         <button onClick={goToLogin}>ログイン</button>
-        <button>登録</button>
+        <button onClick={goToRegister}>登録</button>
       </div>
       <div className='side-container-qualifications'>
         <p>問題集を選ぶ</p>

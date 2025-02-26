@@ -1,12 +1,12 @@
-import './Login.css'
+import './Register.css'
 import Sidebar from '../Sidebar/Sidebar';
 
-function Login() {
+function Register() {
   return (
     <>
       <div className='top-container'>
         <div className='main-container'>
-          <p className='main-title'>ログイン</p>
+          <p className='main-title'>登録</p>
           <div>
             <p>ユーザーネーム</p>
             <input/>
@@ -15,7 +15,7 @@ function Login() {
             <p>パスワード</p>
             <input/>
           </div>
-          <button>ログイン</button>
+          <button>登録</button>
 
         </div>
         <Sidebar />
@@ -24,4 +24,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Register

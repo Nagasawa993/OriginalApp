@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './Top.css'
 import image_tree from '../assets/top/tree.svg'
 import Sidebar from '../Sidebar/Sidebar';
