@@ -21,7 +21,7 @@
   .side-container-qualifications {
     display: flex;
     flex-direction: column;
-    text-align: center;
+    /* text-align: center; */
     background-color:rgb(151, 219, 161);
   }
   

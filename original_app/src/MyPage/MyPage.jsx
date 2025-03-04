@@ -10,6 +10,9 @@ function MyPage() {
       <div className='top-container'>
         <div className='main-container'>
           <h1 className='main-title'>マイページ</h1>
+            <div>
+              <p>成績一覧</p>
+            </div>
             <div className='item'>
               <img src={image_python}/>
               <p>Python</p>
@@ -21,6 +24,15 @@ function MyPage() {
             <div className='item'>
               <img src={image_lpic}/>
               <p>LPIC</p>
+            </div>
+            <div>
+              <p>ユーザー編集</p>
+            </div>
+            <div>
+              <p>ユーザー名</p>
+              <input type='text'/>
+              <p>パスワード</p>
+              <input type='text'/>
             </div>
         </div>
         <Sidebar />
