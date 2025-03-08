@@ -3,13 +3,17 @@ import Sidebar from '../Sidebar/Sidebar';
 import image_lpic from '../assets/icon/Icon_LPIC.svg'
 import image_python from '../assets/icon/Icon_Python.svg'
 import image_vba from '../assets/icon/Icon_VBA.svg'
+import React from "react";
+import { useLocation } from "react-router-dom";
 
 function MyPage() {
+  const location = useLocation();
+  const userInput = location.state?.username;
   return (
     <>
       <div className='top-container'>
         <div className='main-container'>
-          <h1 className='main-title'>マイページ</h1>
+          <h1 className='main-title'>{userInput}のマイページ</h1>
             <div>
               <p>成績一覧</p>
             </div>

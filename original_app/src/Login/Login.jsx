@@ -4,8 +4,8 @@ import './Login.css'
 import Sidebar from '../Sidebar/Sidebar';
 
 const users = [
-  { username: "user1", password: "password1" },
-  { username: "user2", password: "password2" },
+  { username: "user1", password: "pass1" },
+  { username: "user2", password: "pass2" },
 ];
 
 function Login() {
@@ -13,18 +13,31 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [nameError, setNameError] = useState("");
-  const [passWordError, setPassWordError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+  const handleName = (e) => {
+    setUsername(e.target.value)
+  }
+  const handlePassword = (e) => {
+    setPassword(e.target.value)
+  }
 
   // ログイン処理
   const handleLogin = () => {
+    setNameError('')
+    setPasswordError('')
+    setError('')
     const user = users.find((u) => u.username === username && u.password === password);
     if (user) {
-      navigate("/MyPage", { state: { username } }); // マイページへ遷移
-    }else if(username==="" || password===""){
-      setNameError("ユーザー名を入力して下さい")
-      setPassWordError("パスワードを入力して下さい")
+      navigate("/MyPage", { state: { username: username } }); // マイページへ遷移
     }else  {
+      if (username ==='') {
+        setNameError('ユーザー名を入力して下さい')
+      }
+      if (password ==='') {
+        setPasswordError('パスワードを入力して下さい')
+      }
+      if (username !=='' && password !=='')
       setError("ユーザー名、もしくはパスワードが誤っています。");
     }
   };
@@ -41,7 +54,7 @@ function Login() {
               type="text"
               placeholder="ユーザー名"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleName}
             />
           </div>
           {nameError && <p className='fail-error'>{nameError}</p>}
@@ -51,10 +64,10 @@ function Login() {
               type="password"
               placeholder="パスワード"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePassword}
             />
           </div>
-          {passWordError && <p className='fail-error'>{passWordError}</p>}
+          {passwordError && <p className='fail-error'>{passwordError}</p>}
           <button onClick={handleLogin}>ログイン</button>
         </div>
         <Sidebar />

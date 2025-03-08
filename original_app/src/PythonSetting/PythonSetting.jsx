@@ -50,6 +50,7 @@ function PythonSetting() {
               </select>
             </div>
           </div>
+          <button>スタート</button>
         </div>
         <Sidebar />
       </div>

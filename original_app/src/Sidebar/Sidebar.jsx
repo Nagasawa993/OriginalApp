@@ -12,6 +12,9 @@ function Sidebar () {
   const goToRegister = () => {
     navigate('/Register');
   };
+  const handleClick = (path) => {
+    navigate(path);
+  };
   return (
     <div className='side-container'>
       <div className='side-container-btn'>
@@ -21,7 +24,7 @@ function Sidebar () {
       <div className='side-container-qualifications'>
         <p>問題集を選ぶ</p>
         <ul>
-          <li>
+          <li onClick={() => handleClick("/PythonSetting")}>
             <img
               src={image_python}/>
             Python
