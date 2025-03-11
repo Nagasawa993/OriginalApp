@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../UserContext";
 import './Login.css'
 import Sidebar from '../Sidebar/Sidebar';
 
@@ -8,71 +9,65 @@ const users = [
   { username: "user2", password: "pass2" },
 ];
 
-function Login() {
+const Login = () => {
+  const { login } = useContext(UserContext);
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [nameError, setNameError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const navigate = useNavigate();
-  const handleName = (e) => {
-    setUsername(e.target.value)
-  }
-  const handlePassword = (e) => {
-    setPassword(e.target.value)
-  }
+  const [error, setError] = useState("");
 
-  // ログイン処理
-  const handleLogin = () => {
-    setNameError('')
-    setPasswordError('')
-    setError('')
+  const handleLogin = async (e) => {
+    setUsernameError("")
+    setPasswordError("")
+    setError("")
     const user = users.find((u) => u.username === username && u.password === password);
-    if (user) {
-      navigate("/MyPage", { state: { username: username } }); // マイページへ遷移
-    }else  {
-      if (username ==='') {
-        setNameError('ユーザー名を入力して下さい')
-      }
-      if (password ==='') {
-        setPasswordError('パスワードを入力して下さい')
-      }
-      if (username !=='' && password !=='')
-      setError("ユーザー名、もしくはパスワードが誤っています。");
+    e.preventDefault();
+    if(username===""){
+      setUsernameError("ユーザ名を入力して下さい")
     }
+    if(password===""){
+      setPasswordError("パスワードを入力して下さい")
+    }
+    if (user) {
+      await login(username, password);
+      navigate("/MyPage", { state: { username: username } });
+    }else if(username !=='' && password !==''){
+      setError("ユーザー名、もしくはパスワードが誤っています。");
+    }     
   };
 
   return (
-    <>
       <div className='top-container'>
         <div className='main-container'>
           <p className='main-title'>ログイン</p>
           <div>
             <p>ユーザー名</p>
-            {error && <p className='fail-error'>{error}</p>}
+            <p>{error}</p>
             <input
               type="text"
               placeholder="ユーザー名"
               value={username}
-              onChange={handleName}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-          {nameError && <p className='fail-error'>{nameError}</p>}
+          <p>{usernameError}</p>
           <div>
             <p>パスワード</p>
             <input
               type="password"
               placeholder="パスワード"
               value={password}
-              onChange={handlePassword}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          {passwordError && <p className='fail-error'>{passwordError}</p>}
+          <p>{passwordError}</p>
           <button onClick={handleLogin}>ログイン</button>
         </div>
         <Sidebar />
       </div>
-    </>
   )
 }
 
