@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import './PythonSetting.css'
 import Sidebar from '../Sidebar/Sidebar';
 
 function PythonSetting() {
+    const navigate = useNavigate();
   const numbers = ['10', '20', '全部'];
   return (
     <>
@@ -51,6 +53,7 @@ function PythonSetting() {
             </div>
           </div>
           <button>スタート</button>
+          <button onClick={() => navigate("/page1")}>ページ1へ</button>
         </div>
         <Sidebar />
       </div>
