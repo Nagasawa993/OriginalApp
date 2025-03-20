@@ -13,6 +13,8 @@ const Login = () => {
   const { login } = useContext(UserContext);
   const navigate = useNavigate();
 
+//ログイン処理の中で、画面遷移する前にuser名とパスワードをローカルストレージに保存する
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
@@ -33,6 +35,7 @@ const Login = () => {
     }
     if (user) {
       await login(username, password);
+      localStorage.setItem("authToken", "dummy-token"); // トークンを保存
       navigate("/MyPage", { state: { username: username } });
     }else if(username !=='' && password !==''){
       setError("ユーザー名、もしくはパスワードが誤っています。");
