@@ -1,5 +1,4 @@
 import React from "react";
-// import { Routes, Route } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Top from './Top/Top';
 import Login from './Login/Login';
@@ -27,7 +26,7 @@ const AppRouter = () => {
 
 function RequireAuth({ children }) {
   const isLoggedIn = localStorage.getItem("authToken");
-  return isLoggedIn ? children : <Navigate to="/" />;
+  return isLoggedIn ? children : <Navigate to="/Login" />;
 }
 
 export default AppRouter;
