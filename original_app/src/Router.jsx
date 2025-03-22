@@ -25,8 +25,9 @@ const AppRouter = () => {
 };
 
 function RequireAuth({ children }) {
-  const isLoggedIn = localStorage.getItem("authToken");
-  return isLoggedIn ? children : <Navigate to="/Login" />;
+  const isUsername = localStorage.getItem("username");
+  const isPassword = localStorage.getItem("password");
+  return isUsername && isPassword ? children : <Navigate to="/Login" />;
 }
 
 export default AppRouter;

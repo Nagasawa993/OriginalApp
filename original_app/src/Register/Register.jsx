@@ -32,7 +32,8 @@ const Register = () => {
     }
     if(!user && username !=="" && password !==""){
       await signUp(username, password);
-      localStorage.setItem("authToken", "dummy-token"); // トークンを保存
+      localStorage.setItem("username", username); // トークンを保存
+      localStorage.setItem("password", password); // トークンを保存
       navigate("/mypage", { state: { username: username } });
     }else if(user){
       setError("すでに存在するユーザー名です");

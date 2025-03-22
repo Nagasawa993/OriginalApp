@@ -7,16 +7,13 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-//このページに到達したときに、ログインチェックを行う
-//user名とパスワードがPC(chorome、ローカルストレージ　or セッションストレージ)に保存されているか確認する
-//ログインしていなかったら、強制的にログインページに遷移
-
 function MyPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const userInput = location.state?.username;
   const handleLogout = () => {
-    localStorage.removeItem("authToken"); // トークン削除
+    localStorage.removeItem("username"); // トークン削除
+    localStorage.removeItem("password"); // トークン削除
     navigate("/"); // ログアウト後にログインページへリダイレクト
   };
 
