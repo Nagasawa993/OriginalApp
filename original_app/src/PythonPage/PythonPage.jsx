@@ -11,7 +11,7 @@ function Page({ index, pages }) {
       {index + 1 < pages.length ? (
         <button onClick={() => navigate(nextPage)}>次のページへ</button>
       ) : (
-        <button onClick={() => navigate("/")}>TOPへ戻る</button>
+        <button onClick={() => navigate("/PythonSetting")}>TOPへ戻る</button>
       )}
     </div>
   );

@@ -16,10 +16,10 @@ function PythonSetting() {
           </div>
           <div>
             <p>出題形式</p>
-            <div className='checkbox'>
-              <input type='checkbox'/>
+            <div className='radio'>
+              <input type='radio' name="order" defaultChecked={true}/>
               <p>順番に出題</p>
-              <input type='checkbox'/>
+              <input type='radio' name="order"/>
               <p>ランダムに出題</p>
             </div>
           </div>
