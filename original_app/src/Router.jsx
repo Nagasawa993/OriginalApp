@@ -18,9 +18,6 @@ const AppRouter = () => {
             <Route path='/PythonSetting' element={<PythonSetting />} />
             <Route path='/MyPage' element={<RequireAuth><MyPage /></RequireAuth>} />
             <Route path="/page/:index" element={<PythonPage />} />
-            {/* {pages.map((page, index) => (
-              <Route key={index} path={`/page${index + 1}`} element={<PythonPage index={index} pages={pages} />} />
-            ))} */}
         </Routes>
     );
 };
