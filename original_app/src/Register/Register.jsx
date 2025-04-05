@@ -1,75 +1,87 @@
-import React, { useState, useContext } from "react";
+import { Box, Button, Field, Heading, Input, Stack } from "@chakra-ui/react";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
-import './Register.css'
-import Sidebar from '../Sidebar/Sidebar';
-
-const users = [
-  { username: "user1", password: "pass1" },
-  { username: "user2", password: "pass2" },
-];
+import { toaster } from "../components/ui/toaster";
+import { db } from "../firebase";
 
 const Register = () => {
-  const { signUp } = useContext(UserContext);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm();
+
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [error, setError] = useState("");
+  const onSubmit = async (data) => {
+    try {
+      console.log("Data", data);
+      const userCollection = collection(db, "user");
+      const snapshots = await getDocs(userCollection);
 
-  const handleSignUp = async (e) => {
-    setUsernameError("")
-    setPasswordError("")
-    const user = users.find((u) => u.username === username);
-    e.preventDefault();
-    if(username===""){
-      setUsernameError("ユーザ名を入力して下さい")
-    }
-    if(password===""){
-      setPasswordError("パスワードを入力して下さい")
-    }
-    if(!user && username !=="" && password !==""){
-      await signUp(username, password);
-      localStorage.setItem("username", username); // トークンを保存
-      localStorage.setItem("password", password); // トークンを保存
-      navigate("/mypage", { state: { username: username } });
-    }else if(user){
-      setError("すでに存在するユーザー名です");
+      const users = snapshots.docs.map((doc) => doc.data());
+      const match = users.find((user) => user.name === data.username);
+
+      if (match) {
+        setError("username", {
+          type: "manual",
+          message: "ユーザー名が重複しています。別のユーザー名をお試しください。",
+        });
+        return;
+      }
+
+      const newUserRef = doc(userCollection);
+      await setDoc(newUserRef, { name: data.username, password: data.password });
+
+      toaster.create({
+        title: "登録が完了しました",
+        description: `ようこそ ${data.username}さん`,
+        type: "success",
+        duration: 3000,
+        meta: {
+          closable: true,
+        },
+      });
+
+      window.localStorage.setItem("username", data.username);
+      window.localStorage.setItem("password", data.password);
+      navigate("/Mypage");
+    } catch (err) {
+      console.error("ログイン失敗:", err);
     }
   };
 
   return (
-      <div className='top-container'>
-        <div className='main-container'>
-          <p className='main-title'>登録</p>
-          <p>{error}</p>
-          <form onSubmit={handleSignUp}>
-          <div>
-            <p>ユーザーネーム</p>
-            <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-          <p>{usernameError}</p>
-          <div>
-            <p>パスワード</p>
-            <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <p>{passwordError}</p>
-          <button type="submit">アカウント作成</button>
-          </form>
-        </div>
-        <Sidebar />
-      </div>
-  )
-}
+    <Box w="100%" h="100%" minH="100vh" maxW="1000px">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack w="50%" align="center" m="0 auto" mt={10} gap={10}>
+          <Heading size="2xl">登録</Heading>
 
-export default Register
+          <Field.Root invalid={!!errors.username} required>
+            <Field.Label>ユーザー名</Field.Label>
+            <Input placeholder="ユーザー名を入力してください" {...register("username", { required: true })} />
+            <Field.ErrorText> {errors.username && errors.username.message}</Field.ErrorText>
+          </Field.Root>
+
+          <Field.Root invalid={!!errors.password} required>
+            <Field.Label>パスワード</Field.Label>
+            <Input
+              type="password"
+              placeholder="パスワードを入力してください"
+              {...register("password", { required: true })}
+            />
+            <Field.ErrorText>{errors.password && "パスワードを入力してください"}</Field.ErrorText>
+          </Field.Root>
+
+          <Button type="submit" bgColor="var(--color-blue)" px={8}>
+            登録
+          </Button>
+        </Stack>
+      </form>
+    </Box>
+  );
+};
+
+export default Register;

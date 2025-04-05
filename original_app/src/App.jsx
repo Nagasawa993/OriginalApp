@@ -1,18 +1,17 @@
-import React from 'react';
 // import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 // import Top from './Top/Top.jsx';
-import { BrowserRouter } from "react-router-dom";
+import { Provider } from "./components/ui/provider";
+import AppRouter from "./Router"; // ルーティング設定
 import { UserProvider } from "./UserContext";
-import AppRouter from "./Router";  // ルーティング設定
 
 const App = () => {
   return (
     <UserProvider>
-      <BrowserRouter>
+      <Provider>
         <AppRouter />
-      </BrowserRouter>
+      </Provider>
     </UserProvider>
   );
-}
+};
 
 export default App;

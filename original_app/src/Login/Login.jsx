@@ -1,78 +1,68 @@
-import React, { useState, useContext } from "react";
+import { Box, Button, Field, Heading, Input, Stack } from "@chakra-ui/react";
+import { collection, getDocs } from "firebase/firestore";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
-import './Login.css'
-import Sidebar from '../Sidebar/Sidebar';
-
-const users = [
-  { username: "user1", password: "pass1" },
-  { username: "user2", password: "pass2" },
-];
+import { db } from "../firebase";
 
 const Login = () => {
-  const { login } = useContext(UserContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const navigate = useNavigate();
 
-//ログイン処理の中で、画面遷移する前にuser名とパスワードをローカルストレージに保存する
+  const onSubmit = async (data) => {
+    try {
+      console.log("Data", data);
+      const userCollection = collection(db, "user");
+      const snapshots = await getDocs(userCollection);
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [error, setError] = useState("");
+      const users = snapshots.docs.map((doc) => doc.data());
+      const match = users.find((user) => user.password === data.password && user.name === data.username);
 
-  const handleLogin = async (e) => {
-    setUsernameError("")
-    setPasswordError("")
-    setError("")
-    const user = users.find((u) => u.username === username && u.password === password);
-    e.preventDefault();
-    if(username===""){
-      setUsernameError("ユーザ名を入力して下さい")
+      if (match) {
+        window.localStorage.setItem("username", data.username);
+        window.localStorage.setItem("password", data.password);
+        navigate("/Mypage");
+      } else {
+        alert("ユーザー名またはパスワードが間違っています。");
+      }
+    } catch (err) {
+      console.error("ログイン失敗:", err);
     }
-    if(password===""){
-      setPasswordError("パスワードを入力して下さい")
-    }
-    if (user) {
-      await login(username, password);
-      localStorage.setItem("username", username); // トークンを保存
-      localStorage.setItem("password", password); // トークンを保存
-      navigate("/MyPage", { state: { username: username } });
-    }else if(username !=='' && password !==''){
-      setError("ユーザー名、もしくはパスワードが誤っています。");
-    }     
   };
 
   return (
-      <div className='top-container'>
-        <div className='main-container'>
-          <p className='main-title'>ログイン</p>
-          <div>
-            <p>ユーザー名</p>
-            <p>{error}</p>
-            <input
-              type="text"
-              placeholder="ユーザー名"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-          <p>{usernameError}</p>
-          <div>
-            <p>パスワード</p>
-            <input
-              type="password"
-              placeholder="パスワード"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <p>{passwordError}</p>
-          <button onClick={handleLogin}>ログイン</button>
-        </div>
-        <Sidebar />
-      </div>
-  )
-}
+    <Box w="100%" h="100%" minH="100vh" maxW="1000px">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack w="50%" align="center" m="0 auto" mt={10} gap={10}>
+          <Heading size="2xl">ログイン</Heading>
 
-export default Login
+          <Field.Root invalid={!!errors.username} required>
+            <Field.Label>ユーザー名</Field.Label>
+            <Input placeholder="ユーザー名を入力してください" {...register("username", { required: true })} />
+            <Field.ErrorText>{errors.username && "ユーザー名を入力してください"}</Field.ErrorText>
+          </Field.Root>
+
+          <Field.Root invalid={!!errors.password} required>
+            <Field.Label>パスワード</Field.Label>
+            <Input
+              type="password"
+              placeholder="パスワードを入力してください"
+              {...register("password", { required: true })}
+            />
+            <Field.ErrorText>{errors.password && "パスワードを入力してください"}</Field.ErrorText>
+          </Field.Root>
+
+          <Button type="submit" bgColor="var(--color-blue)" px={8}>
+            ログイン
+          </Button>
+        </Stack>
+      </form>
+    </Box>
+  );
+};
+
+export default Login;

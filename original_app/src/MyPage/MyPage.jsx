@@ -1,14 +1,15 @@
-import './MyPage.css'
-import Sidebar from '../Sidebar/Sidebar';
-import image_lpic from '../assets/icon/Icon_LPIC.svg'
-import image_python from '../assets/icon/Icon_Python.svg'
-import image_vba from '../assets/icon/Icon_VBA.svg'
+import { Box, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import LPIC_Icon from "../assets/icon/Icon_LPIC.svg";
+import Python_Icon from "../assets/icon/Icon_Python.svg";
+import VBA_Icon from "../assets/icon/Icon_VBA.svg";
+import "./MyPage.css";
 
 function MyPage() {
+  const icons = { Python: Python_Icon, VBA: VBA_Icon, LPIC: LPIC_Icon };
   const navigate = useNavigate();
+
   const location = useLocation();
   const userInput = location.state?.username;
   const handleLogout = () => {
@@ -19,39 +20,43 @@ function MyPage() {
 
   return (
     <>
-      <div className='top-container'>
-        <div className='main-container'>
-          <h1 className='main-title'>{userInput}のマイページ</h1>
-            <div>
-              <p>成績一覧</p>
-            </div>
-            <div className='item'>
-              <img src={image_python}/>
-              <p>Python</p>
-            </div>
-            <div className='item'>
-              <img src={image_vba}/>
-              <p>VBA</p>
-            </div>
-            <div className='item'>
-              <img src={image_lpic}/>
-              <p>LPIC</p>
-            </div>
-            <div>
-              <p>ユーザー編集</p>
-            </div>
-            <div>
-              <p>ユーザー名</p>
-              <input type='text'/>
-              <p>パスワード</p>
-              <input type='text'/>
-            </div>
-            <button onClick={handleLogout}>ログアウト</button>
-        </div>
-        <Sidebar />
-      </div>
+      <Box w={"100%"} h={"100%"} minH={"100vh"}>
+        <Stack alignItems={"center"} mt={10} w={"100%"}>
+          <Heading size={"2xl"}>マイページ</Heading>
+
+          <Stack alignItems={"flex-start"} w={"100%"} pl={"14rem"} mt={16}>
+            <Heading size={"xl"}>成績一覧</Heading>
+
+            <Stack mt={4}>
+              {Object.entries(icons).map((icon) => (
+                <Flex gap={4} key={icon[0]} alignItems={"center"}>
+                  <Box>
+                    <Image src={icon[1]} alt={`${icon[0]}のアイコン`} />
+                  </Box>
+                  <Text>{icon[0]}</Text>
+                </Flex>
+              ))}
+            </Stack>
+          </Stack>
+
+          <Stack alignItems={"flex-start"} w={"100%"} pl={"14rem"} mt={16}>
+            <Heading size={"xl"}>ユーザー編集</Heading>
+
+            <Stack mt={4}>
+              {Object.entries(icons).map((icon) => (
+                <Flex gap={4} key={icon[0]} alignItems={"center"}>
+                  <Box>
+                    <Image src={icon[1]} alt={`${icon[0]}のアイコン`} />
+                  </Box>
+                  <Text>{icon[0]}</Text>
+                </Flex>
+              ))}
+            </Stack>
+          </Stack>
+        </Stack>
+      </Box>
     </>
-  )
+  );
 }
 
-export default MyPage
+export default MyPage;
