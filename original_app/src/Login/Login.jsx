@@ -2,6 +2,7 @@ import { Box, Button, Field, Heading, Input, Stack } from "@chakra-ui/react";
 import { collection, getDocs } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 import { db } from "../firebase";
 
 const Login = () => {
@@ -12,6 +13,7 @@ const Login = () => {
   } = useForm();
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const onSubmit = async (data) => {
     try {
@@ -23,8 +25,7 @@ const Login = () => {
       const match = users.find((user) => user.password === data.password && user.name === data.username);
 
       if (match) {
-        window.localStorage.setItem("username", data.username);
-        window.localStorage.setItem("password", data.password);
+        login(data);
         navigate("/Mypage");
       } else {
         alert("ユーザー名またはパスワードが間違っています。");

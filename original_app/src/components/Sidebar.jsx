@@ -1,8 +1,9 @@
 import { Box, Button, Card, Flex, Image, Stack, Text } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LPIC_Icon from "../assets/icon/Icon_LPIC.svg";
 import Python_Icon from "../assets/icon/Icon_Python.svg";
 import VBA_Icon from "../assets/icon/Icon_VBA.svg";
+import { useAuth } from "../AuthContext";
 
 export const Sidebar = () => {
   const icons = { Python: Python_Icon, VBA: VBA_Icon, LPIC: LPIC_Icon };
@@ -12,9 +13,15 @@ export const Sidebar = () => {
     navigate("/Login");
   };
 
+  const transitionToMypage = () => {
+    navigate("/Mypage");
+  };
+
   const transitionToRegister = () => {
     navigate("/Register");
   };
+
+  const { isLoggedIn, logout } = useAuth();
 
   return (
     <Box w={"40rem"} backgroundColor={"var(--color-gray)"}>
@@ -26,9 +33,9 @@ export const Sidebar = () => {
             p={2}
             pl={8}
             pr={8}
-            onClick={transitionToLogin}
+            onClick={isLoggedIn ? transitionToMypage : transitionToLogin}
           >
-            ログイン
+            {isLoggedIn ? "マイページ" : "ログイン"}
           </Button>
           <Button
             variant={"outline"}
@@ -37,9 +44,9 @@ export const Sidebar = () => {
             p={2}
             pl={8}
             pr={8}
-            onClick={transitionToRegister}
+            onClick={isLoggedIn ? logout : transitionToRegister}
           >
-            登 録
+            {isLoggedIn ? "ログアウト" : "登 録"}
           </Button>
         </Flex>
 
@@ -52,12 +59,14 @@ export const Sidebar = () => {
             </Card.Header>
             <Card.Body gap={4} pb={20}>
               {Object.entries(icons).map((icon) => (
-                <Flex gap={4} key={icon[0]} alignItems={"center"} ml={20}>
-                  <Box>
-                    <Image src={icon[1]} alt={`${icon[0]}のアイコン`} />
-                  </Box>
-                  <Text>{icon[0]}</Text>
-                </Flex>
+                <Link to={`/Setting?lang=${icon[0]}`} key={icon[0]}>
+                  <Flex gap={4} alignItems={"center"} ml={20}>
+                    <Box>
+                      <Image src={icon[1]} alt={`${icon[0]}のアイコン`} />
+                    </Box>
+                    <Text>{icon[0]}</Text>
+                  </Flex>
+                </Link>
               ))}
             </Card.Body>
           </Card.Root>
