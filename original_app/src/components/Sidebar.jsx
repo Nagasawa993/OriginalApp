@@ -1,12 +1,29 @@
 import { Box, Button, Card, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { collection, getDocs } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import LPIC_Icon from "../assets/icon/Icon_LPIC.svg";
-import Python_Icon from "../assets/icon/Icon_Python.svg";
-import VBA_Icon from "../assets/icon/Icon_VBA.svg";
 import { useAuth } from "../AuthContext";
+import { db } from "../firebase";
 
 export const Sidebar = () => {
-  const icons = { Python: Python_Icon, VBA: VBA_Icon, LPIC: LPIC_Icon };
+  const [questionKind, setQuestionKind] = useState({});
+
+  useEffect(() => {
+    const getQuestionKind = async () => {
+      const questionKindCollection = collection(db, "question-kind");
+      const questionSnapshots = await getDocs(questionKindCollection);
+      const questionKinds = questionSnapshots.docs.map((doc) => doc.data());
+
+      const newQuestionKind = {};
+      questionKinds.forEach((questionKind) => {
+        newQuestionKind[questionKind.name] = questionKind.img_src;
+      });
+
+      setQuestionKind(newQuestionKind);
+    };
+
+    getQuestionKind();
+  }, []);
 
   const navigate = useNavigate();
   const transitionToLogin = () => {
@@ -58,7 +75,7 @@ export const Sidebar = () => {
               </Card.Title>
             </Card.Header>
             <Card.Body gap={4} pb={20}>
-              {Object.entries(icons).map((icon) => (
+              {Object.entries(questionKind).map((icon) => (
                 <Link to={`/Setting?lang=${icon[0]}`} key={icon[0]}>
                   <Flex gap={4} alignItems={"center"} ml={20}>
                     <Box>

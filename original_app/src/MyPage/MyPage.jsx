@@ -1,13 +1,29 @@
 import { Box, Flex, Heading, Image, Stack, Text } from "@chakra-ui/react";
-import React from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import LPIC_Icon from "../assets/icon/Icon_LPIC.svg";
-import Python_Icon from "../assets/icon/Icon_Python.svg";
-import VBA_Icon from "../assets/icon/Icon_VBA.svg";
+import { db } from "../firebase";
 import "./MyPage.css";
 
 function MyPage() {
-  const icons = { Python: Python_Icon, VBA: VBA_Icon, LPIC: LPIC_Icon };
+  const [questionKind, setQuestionKind] = useState({});
+
+  useEffect(() => {
+    const getQuestionKind = async () => {
+      const questionKindCollection = collection(db, "question-kind");
+      const questionSnapshots = await getDocs(questionKindCollection);
+      const questionKinds = questionSnapshots.docs.map((doc) => doc.data());
+
+      const newQuestionKind = {};
+      questionKinds.forEach((questionKind) => {
+        newQuestionKind[questionKind.name] = questionKind.img_src;
+      });
+
+      setQuestionKind(newQuestionKind);
+    };
+
+    getQuestionKind();
+  }, []);
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -28,7 +44,7 @@ function MyPage() {
             <Heading size={"xl"}>成績一覧</Heading>
 
             <Stack mt={4}>
-              {Object.entries(icons).map((icon) => (
+              {Object.entries(questionKind).map((icon) => (
                 <Flex gap={4} key={icon[0]} alignItems={"center"}>
                   <Box>
                     <Image src={icon[1]} alt={`${icon[0]}のアイコン`} />
@@ -43,7 +59,7 @@ function MyPage() {
             <Heading size={"xl"}>ユーザー編集</Heading>
 
             <Stack mt={4}>
-              {Object.entries(icons).map((icon) => (
+              {Object.entries(questionKind).map((icon) => (
                 <Flex gap={4} key={icon[0]} alignItems={"center"}>
                   <Box>
                     <Image src={icon[1]} alt={`${icon[0]}のアイコン`} />
