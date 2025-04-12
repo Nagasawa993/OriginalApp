@@ -6,9 +6,9 @@ import { Sidebar } from "./components/Sidebar";
 import { Toaster } from "./components/ui/toaster";
 import Login from "./Login/Login";
 import MyPage from "./MyPage/MyPage";
-import PythonPage from "./PythonPage/PythonPage";
-import PythonSetting from "./PythonSetting/PythonSetting";
+import { QuizPage } from "./Question/Question";
 import Register from "./Register/Register";
+import { Result } from "./Result/Result";
 import { Setting } from "./Setting/Setting";
 import Top from "./Top/Top";
 
@@ -30,7 +30,8 @@ const AppRouter = () => {
           <Route path="/" element={<Top />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
-          <Route path="/PythonSetting" element={<PythonSetting />} />
+          <Route path="/Quiz" element={<QuizPage />} />
+          <Route path="/Result" element={<Result />} />
 
           <Route
             path="/MyPage"
@@ -41,7 +42,6 @@ const AppRouter = () => {
             }
           />
           <Route path="/Setting" element={<Setting />} />
-          <Route path="/page/:index" element={<PythonPage />} />
         </Routes>
       </Flex>
     </>

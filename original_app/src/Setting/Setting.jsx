@@ -1,17 +1,8 @@
 import { Box, Button, Checkbox, Flex, Heading, HStack, RadioGroup, Stack, Text } from "@chakra-ui/react";
-import { collection, doc, getCountFromServer, getDoc } from "firebase/firestore";
+import { collection, doc, getCountFromServer, getDoc, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { db } from "../firebase";
-
-/////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
-/////「スタート」ボタン押下でデータの取得までOK。
-/////あとは取得したデータをもとに、Firebaseから問題を作成するだけ。
-/////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
 
 export const Setting = () => {
   const [searchParams] = useSearchParams();
@@ -21,7 +12,7 @@ export const Setting = () => {
   const [questionCountArray, setQuestionCountArray] = useState([]);
   const [questionKind, setQuestionKind] = useState([]);
 
-  const [selectedFormat, setSelectedFormat] = useState(""); // 出題形式
+  const [selectedFormat, setSelectedFormat] = useState("order"); // 出題形式
   const [selectedFields, setSelectedFields] = useState([]); // 出題分野（複数）
   const [selectedDataCount, setSelectedDataCount] = useState(""); // 問題数
 
@@ -35,6 +26,7 @@ export const Setting = () => {
       for (let i = 10; i < count; i += 10) {
         result.push(i);
       }
+
       result.push(count);
       setQuestionCountArray(result);
 
@@ -42,11 +34,41 @@ export const Setting = () => {
       const questionKindData = await getDoc(questionKindCollectionRef);
 
       const questionKind = Object.values(questionKindData.data());
-      setQuestionKind(questionKind);
+
+      // 並び替え
+      const sortedKinds = questionKind.sort((a, b) => {
+        const getNumber = (str) => parseInt(str.replace(/[^0-9]/g, ""), 10);
+        return getNumber(a) - getNumber(b);
+      });
+
+      setQuestionKind(sortedKinds);
     };
 
     getQuestionCount();
   }, [lang]);
+
+  const navigate = useNavigate();
+  const handleStart = async () => {
+    const q = query(collection(db, lang.toLowerCase()), where("field", "in", selectedFields));
+    const querySnapshot = await getDocs(q);
+    const ids = querySnapshot.docs.map((doc) => doc.id);
+
+    if (selectedFormat === "random") {
+      ids.sort(() => Math.random() - 0.5);
+    }
+
+    const selectedIds = ids.slice(0, selectedDataCount);
+    const progress = {
+      idList: selectedIds,
+      currentIndex: 0,
+      answers: new Array(selectedIds.length).fill(null),
+      lang,
+      results: [],
+    };
+
+    localStorage.setItem("quiz_progress", JSON.stringify(progress));
+    navigate("/Quiz");
+  };
 
   return (
     <Box w="100%" h="100%" minH="100vh" maxW="1000px">
@@ -69,7 +91,7 @@ export const Setting = () => {
             <Text borderLeft={"10px solid var(--color-blue)"} pl={3} fontSize={"xl"} fontWeight={"bold"}>
               出題形式
             </Text>
-            <RadioGroup.Root mt={4} onValueChange={setSelectedFormat}>
+            <RadioGroup.Root mt={4} onValueChange={setSelectedFormat} defaultValue={"order"}>
               <HStack gap={10}>
                 <RadioGroup.Item key="order" value="order">
                   <RadioGroup.ItemHiddenInput />
@@ -142,14 +164,7 @@ export const Setting = () => {
             p={2}
             pl={8}
             pr={8}
-            onClick={() => {
-              const settings = {
-                format: selectedFormat,
-                field: selectedFields,
-                dataCount: selectedDataCount,
-              };
-              console.log(settings); // 例: { format: 'random', field: ['分野1', '分野3'], dataCount: 20 }
-            }}
+            onClick={handleStart}
           >
             スタート
           </Button>

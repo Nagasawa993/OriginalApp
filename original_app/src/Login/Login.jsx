@@ -3,6 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
+import { ErrorToast, SuccessToast } from "../components/ui/toaster";
 import { db } from "../firebase";
 
 const Login = () => {
@@ -25,12 +26,14 @@ const Login = () => {
       const match = users.find((user) => user.password === data.password && user.name === data.username);
 
       if (match) {
+        SuccessToast("ログイン成功", "ログインに成功しました。");
         login(data);
         navigate("/Mypage");
       } else {
-        alert("ユーザー名またはパスワードが間違っています。");
+        ErrorToast("ログインエラー", "ユーザー名またはパスワードが間違っています。");
       }
     } catch (err) {
+      ErrorToast("ログインエラー", "ログインに失敗しました。");
       console.error("ログイン失敗:", err);
     }
   };
