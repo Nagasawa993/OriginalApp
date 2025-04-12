@@ -32,7 +32,6 @@ export const Setting = () => {
 
       const questionKindCollectionRef = doc(db, "field", lang.toLocaleLowerCase());
       const questionKindData = await getDoc(questionKindCollectionRef);
-
       const questionKind = Object.values(questionKindData.data());
 
       // 並び替え
@@ -57,12 +56,16 @@ export const Setting = () => {
       ids.sort(() => Math.random() - 0.5);
     }
 
-    const selectedIds = ids.slice(0, selectedDataCount);
+    const selectedDocs = querySnapshot.docs.slice(0, selectedDataCount);
+    const selectedIds = selectedDocs.map((doc) => doc.id);
+    const fields = selectedDocs.map((doc) => doc.data().field); // 各問題の分野を抽出
+
     const progress = {
       idList: selectedIds,
       currentIndex: 0,
       answers: new Array(selectedIds.length).fill(null),
       lang,
+      fields: fields,
       results: [],
     };
 

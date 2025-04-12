@@ -1,4 +1,4 @@
-import { Box, Button, HStack, RadioGroup, Textarea } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, RadioGroup, Stack, Text, Textarea } from "@chakra-ui/react";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -64,34 +64,73 @@ export const QuizPage = () => {
     setQuestion(nextQuestion);
   };
 
+  const handlePrevious = async () => {
+    if (progress.currentIndex <= 0) return;
+
+    const updated = { ...progress };
+    updated.currentIndex -= 1;
+
+    const prevId = updated.idList[updated.currentIndex];
+    const prevRef = doc(db, updated.lang.toLowerCase(), prevId);
+    const prevSnap = await getDoc(prevRef);
+    const prevQuestion = prevSnap.data();
+
+    setSelectedAnswer(updated.answers[updated.currentIndex] || "");
+    localStorage.setItem("quiz_progress", JSON.stringify(updated));
+    setProgress(updated);
+    setQuestion(prevQuestion);
+  };
+
   if (!question || !progress) return <div>読み込み中...</div>;
 
   return (
     <Box w="100%" h="100%" minH="100vh" maxW="1000px">
-      <div>
-        <h2>問題 {progress.currentIndex + 1}</h2>
-        <p>{question.question}</p>
+      <Box p={"0rem 8rem"}>
+        <Heading mt={8} textAlign={"center"}>
+          {progress.lang}
+        </Heading>
+        <Heading textAlign={"center"} mt={6}>
+          {progress.currentIndex + 1} / {progress.idList.length}
+        </Heading>
 
-        {typeof question.choices === "object" ? (
-          <ul>
-            <RadioGroup.Root mt={4} value={selectedAnswer} onValueChange={(e) => setSelectedAnswer(e.value)}>
-              <HStack gap={10}>
+        <Flex gap={6} mt={16}>
+          <Text>Q.</Text>
+          <Text>{question.question}</Text>
+        </Flex>
+
+        <Flex gap={6} mt={12}>
+          <Text>A.</Text>
+          {typeof question.choices === "object" ? (
+            <RadioGroup.Root value={selectedAnswer} onValueChange={(e) => setSelectedAnswer(e.value)}>
+              <Stack gap={10}>
                 {question.choices.map((choice) => (
-                  <RadioGroup.Item key={choice} value={choice}>
+                  <RadioGroup.Item key={choice} value={choice} alignItems={"flex-start"}>
                     <RadioGroup.ItemHiddenInput />
                     <RadioGroup.ItemIndicator />
                     <RadioGroup.ItemText fontSize={"md"}>{choice}</RadioGroup.ItemText>
                   </RadioGroup.Item>
                 ))}
-              </HStack>
+              </Stack>
             </RadioGroup.Root>
-          </ul>
-        ) : (
-          <Textarea onChange={(e) => setSelectedAnswer(e.target.value)} />
-        )}
+          ) : (
+            <Textarea onChange={(e) => setSelectedAnswer(e.target.value)} />
+          )}
+        </Flex>
 
-        <Button onClick={handleNext}>次へ</Button>
-      </div>
+        <Flex justifyContent={"space-between"} mt={20} p={"0 8rem"}>
+          <Button
+            onClick={handlePrevious}
+            border={"1px solid var(--color-blue)"}
+            backgroundColor={"var(--color-white)"}
+            color={"var(--color-blue)"}
+          >
+            前の問題へ
+          </Button>
+          <Button onClick={handleNext} backgroundColor={"var(--color-blue)"}>
+            次の問題へ
+          </Button>
+        </Flex>
+      </Box>
     </Box>
   );
 };

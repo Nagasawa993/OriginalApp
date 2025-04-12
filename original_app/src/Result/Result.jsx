@@ -1,10 +1,12 @@
 import { Box, Button, Flex, Grid, GridItem, Heading } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const Result = () => {
   const [data, setData] = useState(null);
   const [score, setScore] = useState(0);
+  const [stats, setStats] = useState({});
+  console.log(stats);
 
   useEffect(() => {
     const stored = localStorage.getItem("quiz_progress");
@@ -23,6 +25,19 @@ export const Result = () => {
 
     const score = (correctCount / data.idList.length) * 100;
     setScore(score);
+
+    const stats = {};
+    data.fields.forEach((field, index) => {
+      if (!stats[field]) {
+        stats[field] = { correct: 0, total: 0 };
+      }
+      stats[field].total += 1;
+      if (data.results[index]) {
+        stats[field].correct += 1;
+      }
+    });
+
+    setStats(stats);
   }, []);
 
   const navigate = useNavigate();
@@ -63,9 +78,18 @@ export const Result = () => {
 
           <Box mt={20}>
             <Heading fontSize={"1.2rem"}>分野別採点</Heading>
-            <Grid templateColumns={"repeat(2, 1fr)"} mt={4}>
-              <GridItem fontSize={"1.125rem"}>分野1</GridItem>
-              <GridItem fontSize={"1.125rem"}>2 / 8</GridItem>
+            <Grid templateColumns={"repeat(2, 1fr)"} mt={4} rowGap={2}>
+              {Object.entries(stats).map(([field, value]) => {
+                const rate = Math.round((value.correct / value.total) * 100);
+                return (
+                  <Fragment key={field}>
+                    <GridItem fontSize={"1.125rem"}>{field}</GridItem>
+                    <GridItem fontSize={"1.125rem"}>
+                      {value.correct} / {value.total}（{rate}%）
+                    </GridItem>
+                  </Fragment>
+                );
+              })}
             </Grid>
           </Box>
 
