@@ -2,7 +2,8 @@ import { Box, Button, Field, Heading, Input, Stack } from "@chakra-ui/react";
 import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toaster } from "../components/ui/toaster";
+import { useAuth } from "../AuthContext";
+import { ErrorToast, SuccessToast } from "../components/ui/toaster";
 import { db } from "../firebase";
 
 const Register = () => {
@@ -14,6 +15,7 @@ const Register = () => {
   } = useForm();
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const onSubmit = async (data) => {
     try {
@@ -32,24 +34,21 @@ const Register = () => {
         return;
       }
 
+      const score = {};
       const newUserRef = doc(userCollection);
-      await setDoc(newUserRef, { name: data.username, password: data.password });
+      await setDoc(newUserRef, { name: data.username, password: data.password, score });
 
-      toaster.create({
-        title: "登録が完了しました",
-        description: `ようこそ ${data.username}さん`,
-        type: "success",
-        duration: 3000,
-        meta: {
-          closable: true,
-        },
-      });
+      // 🔽 login を呼び出して AuthContext の状態を即座に更新！
+      login({ username: data.username, password: data.password, score });
+      SuccessToast("登録完了", `ようこそ ${data.username}さん`);
 
-      window.localStorage.setItem("username", data.username);
-      window.localStorage.setItem("password", data.password);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("password", data.password);
+      localStorage.setItem("score", JSON.stringify(data.score));
       navigate("/Mypage");
     } catch (err) {
       console.error("ログイン失敗:", err);
+      ErrorToast("ログイン失敗", "ログインに失敗しました。");
     }
   };
 

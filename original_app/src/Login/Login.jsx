@@ -18,7 +18,6 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log("Data", data);
       const userCollection = collection(db, "user");
       const snapshots = await getDocs(userCollection);
 
@@ -27,7 +26,12 @@ const Login = () => {
 
       if (match) {
         SuccessToast("ログイン成功", "ログインに成功しました。");
-        login(data);
+        const addScoreData = {
+          username: match.name,
+          password: match.password,
+          score: match.score,
+        };
+        login(addScoreData);
         navigate("/Mypage");
       } else {
         ErrorToast("ログインエラー", "ユーザー名またはパスワードが間違っています。");
