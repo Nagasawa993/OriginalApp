@@ -16,7 +16,6 @@ export const QuizPage = () => {
 
     if (!stored) return;
     const data = JSON.parse(stored);
-    console.log("Da#,", data);
     setProgress(data);
 
     const fetchQuestion = async () => {

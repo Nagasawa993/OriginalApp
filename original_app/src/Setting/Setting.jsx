@@ -1,4 +1,17 @@
-import { Box, Button, Checkbox, Flex, Heading, HStack, RadioGroup, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  Fieldset,
+  Flex,
+  For,
+  Heading,
+  HStack,
+  RadioGroup,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { collection, doc, getCountFromServer, getDoc, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -40,6 +53,7 @@ export const Setting = () => {
         return getNumber(a) - getNumber(b);
       });
 
+      localStorage.removeItem("quiz_progress");
       setQuestionKind(sortedKinds);
     };
 
@@ -50,13 +64,14 @@ export const Setting = () => {
   const handleStart = async () => {
     const q = query(collection(db, lang.toLowerCase()), where("field", "in", selectedFields));
     const querySnapshot = await getDocs(q);
-    const ids = querySnapshot.docs.map((doc) => doc.id);
+    let docs = querySnapshot.docs;
 
-    if (selectedFormat === "random") {
-      ids.sort(() => Math.random() - 0.5);
+    // ランダム選択の場合は、中身をシャッフルする
+    if (selectedFormat.value === "random") {
+      docs = [...docs].sort(() => Math.random() - 0.5);
     }
 
-    const selectedDocs = querySnapshot.docs.slice(0, selectedDataCount);
+    const selectedDocs = docs.slice(0, selectedDataCount);
     const selectedIds = selectedDocs.map((doc) => doc.id);
     const fields = selectedDocs.map((doc) => doc.data().field); // 各問題の分野を抽出
 
@@ -71,6 +86,17 @@ export const Setting = () => {
 
     localStorage.setItem("quiz_progress", JSON.stringify(progress));
     navigate("/Quiz");
+  };
+
+  const handleCheck = (e, value) => {
+    const result = [...selectedFields];
+    if (e.checked) {
+      result.push(value);
+      setSelectedFields(result);
+    } else {
+      const newCheck = result.filter((data) => data !== value);
+      setSelectedFields(newCheck);
+    }
   };
 
   return (
@@ -116,22 +142,26 @@ export const Setting = () => {
             </Text>
 
             <HStack gap={10} flexWrap={"wrap"} mt={4}>
-              {questionKind.map((kind) => (
-                <Checkbox.Root
-                  key={kind}
-                  value={kind}
-                  checked={selectedFields.includes(kind)}
-                  onCheckedChange={(checked) => {
-                    setSelectedFields((prev) => (checked ? [...prev, kind] : prev.filter((item) => item !== kind)));
-                  }}
-                >
-                  <Checkbox.HiddenInput />
-                  <Checkbox.Control>
-                    <Checkbox.Indicator />
-                  </Checkbox.Control>
-                  <Checkbox.Label>{kind}</Checkbox.Label>
-                </Checkbox.Root>
-              ))}
+              <Fieldset.Root>
+                <CheckboxGroup defaultValue={questionKind[0]} name="questionKind">
+                  <Fieldset.Content>
+                    <For each={questionKind}>
+                      {(value) => (
+                        <Checkbox.Root
+                          key={value}
+                          value={value}
+                          checked={selectedFields}
+                          onCheckedChange={(e) => handleCheck(e, value)}
+                        >
+                          <Checkbox.HiddenInput />
+                          <Checkbox.Control />
+                          <Checkbox.Label>{value}</Checkbox.Label>
+                        </Checkbox.Root>
+                      )}
+                    </For>
+                  </Fieldset.Content>
+                </CheckboxGroup>
+              </Fieldset.Root>
             </HStack>
           </Stack>
 

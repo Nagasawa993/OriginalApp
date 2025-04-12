@@ -47,7 +47,6 @@ function MyPage() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log(data);
       // ユーザー名で検索
       const userCollection = collection(db, "user");
       const q = query(userCollection, where("name", "==", username));

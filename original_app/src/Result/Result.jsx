@@ -9,7 +9,6 @@ export const Result = () => {
   const [data, setData] = useState(null);
   const [score, setScore] = useState(0);
   const [stats, setStats] = useState({});
-  console.log(stats);
 
   useEffect(() => {
     const stored = localStorage.getItem("quiz_progress");
@@ -18,7 +17,6 @@ export const Result = () => {
     if (!stored) return;
     const data = JSON.parse(stored);
     setData(data);
-    console.log("Da#,", data);
 
     let correctCount = 0;
     data.results.forEach((result) => {
@@ -43,7 +41,7 @@ export const Result = () => {
 
     setStats(stats);
 
-    // 🔽 Firestoreのscoreフィールドを更新
+    // Firestoreのscoreフィールドを更新
     const updateUserScore = async () => {
       const userRef = collection(db, "user");
       const q = query(userRef, where("name", "==", username));
@@ -70,7 +68,6 @@ export const Result = () => {
       });
 
       SuccessToast("スコア更新完了", "スコアを更新しました");
-      console.log("US", updatedScore);
       localStorage.setItem("score", JSON.stringify(updatedScore));
     };
 

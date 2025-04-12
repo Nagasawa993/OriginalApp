@@ -19,7 +19,6 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log("Data", data);
       const userCollection = collection(db, "user");
       const snapshots = await getDocs(userCollection);
 
