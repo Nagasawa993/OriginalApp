@@ -2,7 +2,7 @@ import { Box, Button, Flex, Grid, GridItem, Heading } from "@chakra-ui/react";
 import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ErrorToast, SuccessToast } from "../components/ui/toaster";
+import { SuccessToast } from "../components/ui/toaster";
 import { db } from "../firebase";
 
 export const Result = () => {
@@ -48,7 +48,7 @@ export const Result = () => {
       const snapshot = await getDocs(q);
 
       if (snapshot.empty) {
-        ErrorToast("ユーザー検索エラー", "ユーザーが見つかりませんでした");
+        console.log("ゲストユーザーのため、スコア保存はスキップされました。");
         return;
       }
 
