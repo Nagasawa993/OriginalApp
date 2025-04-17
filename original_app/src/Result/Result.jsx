@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Grid, GridItem, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, Grid, GridItem, Heading, useBreakpointValue } from "@chakra-ui/react";
 import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,8 @@ export const Result = () => {
   const [data, setData] = useState(null);
   const [score, setScore] = useState(0);
   const [stats, setStats] = useState({});
+
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   useEffect(() => {
     const stored = localStorage.getItem("quiz_progress");
@@ -90,12 +92,12 @@ export const Result = () => {
 
   return (
     <Box w="100%" h="100%" minH="100vh" maxW="1000px">
-      <Box p={"0rem 4rem"}>
+      <Box p={isMobile ? "0 2rem" : "0rem 4rem"}>
         <Heading size={"2xl"} textAlign={"center"} mt={10}>
           採点結果
         </Heading>
 
-        <Box w={"50%"} m={"0 auto"} mt={24}>
+        <Box w={isMobile ? "90%" : "50%"} m={"0 auto"} mt={isMobile ? 12 : 24}>
           <Grid templateColumns={"repeat(2, 1fr)"} rowGap={8} columnGap={4}>
             <GridItem fontWeight={"bold"} fontSize={"1.125rem"}>
               試験名
