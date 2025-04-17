@@ -1,4 +1,4 @@
-import { Box, Button, Field, Heading, Input, Stack } from "@chakra-ui/react";
+import { Box, Button, Field, Heading, Input, Stack, useBreakpointValue } from "@chakra-ui/react";
 import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,8 @@ import { ErrorToast, SuccessToast } from "../components/ui/toaster";
 import { db } from "../firebase";
 
 const Register = () => {
+  const isMobile = useBreakpointValue({ base: true, lg: false });
+
   const {
     register,
     handleSubmit,
@@ -54,7 +56,7 @@ const Register = () => {
   return (
     <Box w="100%" h="100%" minH="100vh" maxW="1000px">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack w="50%" align="center" m="0 auto" mt={10} gap={10}>
+        <Stack w={isMobile ? "90%" : "50%"} align="center" m="0 auto" mt={10} gap={10}>
           <Heading size="2xl">登録</Heading>
 
           <Field.Root invalid={!!errors.username} required>

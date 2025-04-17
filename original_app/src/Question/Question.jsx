@@ -83,7 +83,7 @@ export const QuizPage = () => {
   if (!question || !progress) return <div>読み込み中...</div>;
 
   return (
-    <Box w="100%" h="100%" minH="100vh" maxW="1000px">
+    <Box w="100%" h="100%" minH="100vh" maxW="1000px" pb={12}>
       <Box p={"0rem 8rem"}>
         <Heading mt={8} textAlign={"center"}>
           {progress.lang}
@@ -94,11 +94,11 @@ export const QuizPage = () => {
 
         <Flex gap={6} mt={16}>
           <Text>Q.</Text>
-          <Text>{question.question}</Text>
+          <Text whiteSpace="pre-wrap">{question.question}</Text>
         </Flex>
 
         <Flex gap={6} mt={12}>
-          <Text>A.</Text>
+          <Text whiteSpace="pre-wrap">A.</Text>
           {typeof question.choices === "object" ? (
             <RadioGroup.Root value={selectedAnswer} onValueChange={(e) => setSelectedAnswer(e.value)}>
               <Stack gap={10}>

@@ -1,4 +1,4 @@
-import { Box, Button, Field, Flex, Heading, Image, Input, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Field, Flex, Heading, Image, Input, Stack, Text, useBreakpointValue } from "@chakra-ui/react";
 import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,8 @@ function MyPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [score, setScore] = useState({});
+
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   useEffect(() => {
     const getQuestionKind = async () => {
@@ -76,11 +78,11 @@ function MyPage() {
 
   return (
     <>
-      <Box w={"100%"} h={"100%"} minH={"100vh"}>
-        <Stack alignItems={"center"} mt={10} w={"100%"}>
+      <Box w={"100%"} h={"100%"} minH={"100vh"} pb={12}>
+        <Stack justifyContent={isMobile ? "center" : "left"} alignItems={"center"} mt={10} w={"100%"}>
           <Heading size={"2xl"}>マイページ</Heading>
 
-          <Stack alignItems={"flex-start"} w={"100%"} p={"0 14rem"} mt={16}>
+          <Stack alignItems={"flex-start"} w={"100%"} p={isMobile ? "0 2rem" : "0 14rem"} mt={16}>
             <Heading size={"xl"}>成績一覧</Heading>
 
             <Stack mt={4} gap={10}>
@@ -99,7 +101,7 @@ function MyPage() {
             </Stack>
           </Stack>
 
-          <Stack alignItems={"flex-start"} w={"100%"} p={"0 14rem"} mt={20}>
+          <Stack alignItems={"flex-start"} w={"100%"} p={isMobile ? "0 2rem" : "0 14rem"} mt={20}>
             <Heading size={"xl"}>ユーザー編集</Heading>
 
             <form onSubmit={onSubmit} style={{ width: "100%" }}>

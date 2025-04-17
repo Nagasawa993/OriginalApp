@@ -11,6 +11,7 @@ import {
   RadioGroup,
   Stack,
   Text,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { collection, doc, getCountFromServer, getDoc, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -28,6 +29,8 @@ export const Setting = () => {
   const [selectedFormat, setSelectedFormat] = useState("order"); // 出題形式
   const [selectedFields, setSelectedFields] = useState([]); // 出題分野（複数）
   const [selectedDataCount, setSelectedDataCount] = useState(""); // 問題数
+
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   useEffect(() => {
     const getQuestionCount = async () => {
@@ -100,12 +103,12 @@ export const Setting = () => {
   };
 
   return (
-    <Box w="100%" h="100%" minH="100vh" maxW="1000px">
+    <Box w="100%" h="100%" minH="100vh" maxW="1000px" pb={12}>
       <Heading size={"2xl"} textAlign={"center"} mt={10}>
         出題設定
       </Heading>
 
-      <Box pl={40} pr={40} mt={20}>
+      <Box pl={isMobile ? 6 : 40} pr={isMobile ? 6 : 40} mt={20}>
         <Stack gap={14}>
           <Stack>
             <Text borderLeft={"10px solid var(--color-blue)"} pl={3} fontSize={"xl"} fontWeight={"bold"}>
