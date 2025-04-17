@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, RadioGroup, Stack, Text, Textarea } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, RadioGroup, Stack, Text, Textarea, useBreakpointValue } from "@chakra-ui/react";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,8 @@ export const QuizPage = () => {
   const [progress, setProgress] = useState(null);
   const [question, setQuestion] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   const navigate = useNavigate();
 
@@ -84,7 +86,7 @@ export const QuizPage = () => {
 
   return (
     <Box w="100%" h="100%" minH="100vh" maxW="1000px" pb={12}>
-      <Box p={"0rem 8rem"}>
+      <Stack p={isMobile ? "2rem" : "0rem 8rem"}>
         <Heading mt={8} textAlign={"center"}>
           {progress.lang}
         </Heading>
@@ -116,7 +118,12 @@ export const QuizPage = () => {
           )}
         </Flex>
 
-        <Flex justifyContent={"space-between"} mt={20} p={"0 8rem"}>
+        <Flex
+          justifyContent={isMobile ? "space-around" : "space-between"}
+          gap={6}
+          mt={20}
+          p={isMobile ? "0" : "0 8rem"}
+        >
           <Button
             onClick={handlePrevious}
             border={"1px solid var(--color-blue)"}
@@ -129,7 +136,7 @@ export const QuizPage = () => {
             次の問題へ
           </Button>
         </Flex>
-      </Box>
+      </Stack>
     </Box>
   );
 };
